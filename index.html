@@ -26,6 +26,13 @@
         .summary-item .val { font-size: 15px; font-weight: 700; margin-top: 2px; }
         .up { color: #00d4aa; }
         .down { color: #ff6b6b; }
+        .section { margin: 20px 0; background: #151530; border-radius: 10px; border: 1px solid #2a2a4e; padding: 16px; }
+        .section-label { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 12px; }
+        .group-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+        .group-table th { background: #1a1a3e; color: #888; padding: 8px 10px; text-align: left; border-bottom: 1px solid #333; font-weight: 600; position: sticky; top: 0; }
+        .group-table td { padding: 6px 10px; border-bottom: 1px solid #2a2a3e; color: #ccc; }
+        .group-table tr:hover td { background: #1a1a3e; }
+        .group-table .tickers { color: #00d4aa; font-family: monospace; font-size: 11px; }
         @media (max-width: 600px) {
             .grid { grid-template-columns: 1fr; }
             .plot-card .plot { height: 200px; }
@@ -54,6 +61,16 @@
 
 <div class="grid" id="chartGrid"></div>
 
+<div class="section" id="stockSection">
+    <div class="section-label">📋 Stock Composition by Industrial Group</div>
+    <div style="overflow-x:auto;">
+        <table class="group-table">
+            <thead><tr><th>Industrial Group</th><th>Cluster (Sector)</th><th>Tickers</th></tr></thead>
+            <tbody id="stockTableBody"></tbody>
+        </table>
+    </div>
+</div>
+
 <script>
 const COLORS = ['#00FF88','#FFD700','#FF6B9D','#00D4FF','#FF9500','#FF3333','#33FF57','#FF33F1','#3399FF','#FF6600','#CC33FF','#FFDD00','#00FFCC','#FF4466'];
 const SECTOR_ORDER = ['Information Technology','Communication Services','Consumer Discretionary','Consumer Staples','Health Care','Financials','Energy','Industrials','Materials','Utilities','Real Estate'];
@@ -66,9 +83,7 @@ async function loadData() {
     try {
         const r = await fetch('data.json');
         return await r.json();
-    } catch(e) {
-        return null;
-    }
+    } catch(e) { return null; }
 }
 
 function groupDailyReturns(dates, groupRets, days, view) {
@@ -91,6 +106,19 @@ function getLastVal(groups, name) {
     return v ? v[v.length-1] : null;
 }
 
+function renderStockTable(data) {
+    const tb = document.getElementById('stockTableBody');
+    tb.innerHTML = '';
+    const groups = Object.keys(data.stocks || {}).sort();
+    for (const grp of groups) {
+        const sec = data.sectors[grp] || '';
+        const tix = (data.stocks[grp] || []).join(', ');
+        const row = document.createElement('tr');
+        row.innerHTML = `<td>${grp}</td><td>${sec}</td><td class="tickers">${tix}</td>`;
+        tb.appendChild(row);
+    }
+}
+
 function render() {
     if (!allData) return;
     const { dates, groups: grpRets } = allData;
@@ -111,10 +139,12 @@ function render() {
         <div class="summary-item"><div class="label">📉 Worst</div><div class="val down">${worst.n}</div><div class="label">${currentView === 'cumulative' ? worst.v.toFixed(1) : worst.v.toFixed(2) + '%'}</div></div>
         <div class="summary-item"><div class="label">📊 Avg Group</div><div class="val" style="color:#fff">${avg.toFixed(1)}</div><div class="label">${Object.keys(slicedGroups).length} groups</div></div>
     `;
-    
     document.getElementById('updateDate').textContent = `Updated: ${slicedDates[slicedDates.length-1]} | ${slicedDates.length} trading days`;
     
-    // Build subplots by sector
+    // Stock table
+    renderStockTable(allData);
+    
+    // Subplots by sector
     const grid = document.getElementById('chartGrid');
     grid.innerHTML = '';
     
@@ -125,61 +155,38 @@ function render() {
         
         const card = document.createElement('div');
         card.className = 'plot-card';
-        
         const titleDiv = document.createElement('div');
         titleDiv.className = 'title';
         const lastVals = validGroups.map(g => `${g} ${getLastVal(slicedGroups, g).toFixed(1)}`).join(' | ');
         titleDiv.innerHTML = `<span>${sector}</span><span class="range">${lastVals}</span>`;
         card.appendChild(titleDiv);
-        
         const plotDiv = document.createElement('div');
         plotDiv.className = 'plot';
-        plotDiv.id = `plot-${sector.replace(/[^a-zA-Z]/g,'')}`;
+        plotDiv.id = `p-${sector.replace(/[^a-z]/gi,'')}`;
         card.appendChild(plotDiv);
         grid.appendChild(card);
         
-        // Build traces
-        const traces = [];
-        validGroups.forEach((g, i) => {
-            const vals = slicedGroups[g];
-            const c = COLORS[i % COLORS.length];
-            traces.push({
-                x: slicedDates,
-                y: vals,
-                type: 'scatter',
-                mode: 'lines',
-                name: g,
-                line: { color: c, width: 2.5 },
-                hovertemplate: `<b>${g}</b><br>%{x|%m/%d}<br>${currentView==='cumulative'?'%{y:.1f}':'%{y:.2f}%'}<extra></extra>`,
-            });
-        });
-        
+        const traces = validGroups.map((g, i) => ({
+            x: slicedDates, y: slicedGroups[g], type: 'scatter', mode: 'lines', name: g,
+            line: { color: COLORS[i % COLORS.length], width: 2.5 },
+            hovertemplate: `<b>${g}</b><br>%{x|%m/%d}<br>${currentView==='cumulative'?'%{y:.1f}':'%{y:.2f}%'}<extra></extra>`
+        }));
         const layout = {
-            paper_bgcolor: '#151530',
-            plot_bgcolor: '#151530',
-            margin: { l: 30, r: 8, t: 4, b: 24 },
-            showlegend: false,
-            xaxis: { gridcolor: '#2a2a3e', tickfont: {color:'#666',size:8}, zeroline: false, showticklabels: true },
+            paper_bgcolor: '#151530', plot_bgcolor: '#151530',
+            margin: { l: 30, r: 8, t: 4, b: 24 }, showlegend: false,
+            xaxis: { gridcolor: '#2a2a3e', tickfont: {color:'#666',size:8}, zeroline: false },
             yaxis: { gridcolor: '#2a2a3e', tickfont: {color:'#666',size:8}, zeroline: currentView==='daily', zerolinecolor: '#444' },
-            hovermode: 'x unified',
-            dragmode: false,
+            hovermode: 'x unified', dragmode: false,
         };
-        const config = { responsive: true, displayModeBar: false, staticPlot: false };
-        Plotly.newPlot(plotDiv.id, traces, layout, config);
+        Plotly.newPlot(plotDiv.id, traces, layout, { responsive: true, displayModeBar: false });
     }
 }
 
-// Init
 loadData().then(data => {
-    if (data) {
-        allData = data;
-        render();
-    } else {
-        document.getElementById('chartGrid').innerHTML = '<div style="text-align:center;padding:40px;color:#888;">⚠️ Failed to load data. Make sure data.json exists.</div>';
-    }
+    if (data) { allData = data; render(); }
+    else document.getElementById('chartGrid').innerHTML = '<div style="text-align:center;padding:40px;color:#888;">⚠️ Failed to load data</div>';
 });
 
-// Controls
 document.querySelectorAll('.period-btn').forEach(btn => {
     btn.onclick = () => {
         document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
@@ -188,11 +195,7 @@ document.querySelectorAll('.period-btn').forEach(btn => {
         render();
     };
 });
-document.getElementById('viewMode').onchange = e => {
-    currentView = e.target.value;
-    render();
-};
+document.getElementById('viewMode').onchange = e => { currentView = e.target.value; render(); };
 </script>
-
 </body>
 </html>
