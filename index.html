@@ -435,11 +435,17 @@ document.querySelectorAll('.period-btn').forEach(btn => {
 document.getElementById('viewMode').onchange = e => { currentView = e.target.value; render(); };
 
 // Sortable headers
+// Numeric change columns (1D, 1W) default to desc on first click so strongest performers appear first.
+const DESC_FIRST = new Set(['change1d', 'change1w']);
 document.querySelectorAll('.group-table th[data-sort]').forEach(th => {
     th.onclick = () => {
         const k = th.dataset.sort;
-        if (sortKey === k) sortAsc = !sortAsc;
-        else { sortKey = k; sortAsc = true; }
+        if (sortKey === k) {
+            sortAsc = !sortAsc;
+        } else {
+            sortKey = k;
+            sortAsc = !DESC_FIRST.has(k);
+        }
         renderStockTable();
     };
 });
