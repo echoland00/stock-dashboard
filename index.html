@@ -40,18 +40,23 @@
         .table-controls label { font-size: 11px; color: #888; }
         .table-controls select, .table-controls input { font-size: 12px; }
         .table-meta { font-size: 11px; color: #888; font-weight: 400; }
-        .group-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-        .group-table th { background: #1a1a3e; color: #888; padding: 8px 10px; text-align: left; border-bottom: 1px solid #333; font-weight: 600; position: sticky; top: 0; user-select: none; cursor: pointer; white-space: nowrap; }
+        .group-table { width: 100%; border-collapse: collapse; font-size: 11px; }
+        .group-table th { background: #1a1a3e; color: #888; padding: 6px 8px; text-align: left; border-bottom: 1px solid #333; font-weight: 600; position: sticky; top: 0; user-select: none; cursor: pointer; white-space: nowrap; }
         .group-table th:hover { color: #fff; }
-        .group-table th .sort-ind { color: #6c5ce7; margin-left: 4px; font-size: 10px; }
+        .group-table th .sort-ind { color: #6c5ce7; margin-left: 4px; font-size: 9px; }
         .group-table th.numeric { text-align: right; }
-        .group-table td { padding: 6px 10px; border-bottom: 1px solid #2a2a3e; color: #ccc; }
+        .group-table td { padding: 5px 8px; border-bottom: 1px solid #2a2a3e; color: #ccc; }
         .group-table td.numeric { text-align: right; color: #aaa; font-variant-numeric: tabular-nums; }
+        .group-table td.cluster { max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #999; }
         .group-table tr { transition: background 0.1s; cursor: pointer; }
         .group-table tr:hover td { background: #1a1a3e; }
         .group-table tr.active td { background: #2a2a5e; color: #FFD700; }
-        .group-table tr.active td.tickers { color: #FFD700; }
-        .group-table .tickers { color: #00d4aa; font-family: monospace; font-size: 11px; }
+        .group-table tr.active td.tickers, .group-table tr.active td.change { color: #FFD700; }
+        .group-table .tickers { color: #00d4aa; font-family: monospace; font-size: 10px; }
+        .group-table .change { font-variant-numeric: tabular-nums; }
+        .group-table .change.up { color: #00d4aa; }
+        .group-table .change.down { color: #ff6b6b; }
+        .group-table .change.flat { color: #777; }
         .group-table tr.hidden { display: none; }
         .empty-row td { text-align: center; color: #888; padding: 24px; }
         .reset-btn { background: transparent; border: 1px solid #444; color: #aaa; padding: 4px 10px; border-radius: 6px; font-size: 11px; cursor: pointer; }
@@ -104,9 +109,11 @@
         <table class="group-table">
             <thead>
                 <tr>
-                    <th data-sort="group" id="th-group">Industrial Group <span class="sort-ind"></span></th>
-                    <th data-sort="sector" id="th-sector">Cluster (Sector) <span class="sort-ind"></span></th>
+                    <th data-sort="group" id="th-group">Group <span class="sort-ind"></span></th>
+                    <th data-sort="sector" id="th-sector">Cluster <span class="sort-ind"></span></th>
                     <th data-sort="count" id="th-count" class="numeric"># <span class="sort-ind"></span></th>
+                    <th data-sort="change1d" id="th-change1d" class="numeric">1D % <span class="sort-ind"></span></th>
+                    <th data-sort="change1w" id="th-change1w" class="numeric">1W % <span class="sort-ind"></span></th>
                     <th data-sort="tickers" id="th-tickers">Tickers <span class="sort-ind"></span></th>
                 </tr>
             </thead>
@@ -162,12 +169,34 @@ function getLastVal(groups, name) {
 function buildGroupRows() {
     const stocks = allData.stocks || {};
     const sectors = allData.sectors || {};
-    return Object.keys(stocks).map(grp => ({
-        group: grp,
-        sector: sectors[grp] || '',
-        count: (stocks[grp] || []).length,
-        tickers: stocks[grp] || []
-    }));
+    return Object.keys(stocks).map(grp => {
+        const { change1d, change1w } = computeChanges(grp);
+        return {
+            group: grp,
+            sector: sectors[grp] || '',
+            count: (stocks[grp] || []).length,
+            change1d, change1w,
+            tickers: stocks[grp] || []
+        };
+    });
+}
+
+// Compute 1D and 1W percentage change using full-period daily returns
+// (1D = last 1 trading day, 1W = last 5 trading days) — independent of period selector
+function computeChanges(grp) {
+    const rets = (allData.groups || {})[grp];
+    if (!rets || rets.length < 2) return { change1d: null, change1w: null };
+    // Build cumulative series from daily returns (base 100)
+    const cum = [];
+    let v = 100;
+    for (const r of rets) { v *= (1 + r / 100); cum.push(v); }
+    const last = cum[cum.length - 1];
+    const d1  = cum.length >= 2 ? cum[cum.length - 2] : last;
+    const d5  = cum.length >= 6 ? cum[cum.length - 6] : cum[0];
+    return {
+        change1d: (last - d1) / d1 * 100,
+        change1w: (last - d5) / d5 * 100
+    };
 }
 
 function applyFilters(rows) {
@@ -185,10 +214,12 @@ function applySort(rows) {
     sorted.sort((a, b) => {
         let av, bv;
         switch (sortKey) {
-            case 'group':   av = a.group.toLowerCase();  bv = b.group.toLowerCase();  break;
-            case 'sector':  av = a.sector.toLowerCase(); bv = b.sector.toLowerCase(); break;
-            case 'count':   av = a.count;                bv = b.count;                break;
-            case 'tickers': av = a.tickers.join(',');    bv = b.tickers.join(',');    break;
+            case 'group':    av = a.group.toLowerCase();  bv = b.group.toLowerCase();  break;
+            case 'sector':   av = a.sector.toLowerCase(); bv = b.sector.toLowerCase(); break;
+            case 'count':    av = a.count;                bv = b.count;                break;
+            case 'change1d': av = a.change1d ?? -Infinity; bv = b.change1d ?? -Infinity; break;
+            case 'change1w': av = a.change1w ?? -Infinity; bv = b.change1w ?? -Infinity; break;
+            case 'tickers':  av = a.tickers.join(',');    bv = b.tickers.join(',');    break;
             default: return 0;
         }
         if (av < bv) return -1 * dir;
@@ -206,7 +237,7 @@ function renderStockTable() {
     meta.textContent = `Showing ${rows.length} / ${Object.keys(allData.stocks || {}).length} groups`;
 
     // Sort indicators
-    ['group','sector','count','tickers'].forEach(k => {
+    ['group','sector','count','change1d','change1w','tickers'].forEach(k => {
         const th = document.getElementById('th-' + k);
         const ind = th.querySelector('.sort-ind');
         ind.textContent = (sortKey === k) ? (sortAsc ? '▲' : '▼') : '';
@@ -215,20 +246,26 @@ function renderStockTable() {
     if (!rows.length) {
         const tr = document.createElement('tr');
         tr.className = 'empty-row';
-        tr.innerHTML = '<td colspan="4">No groups match the current filters.</td>';
+        tr.innerHTML = '<td colspan="6">No groups match the current filters.</td>';
         tb.appendChild(tr);
         return;
     }
+
+    const fmtPct = v => v == null ? '—' : (v >= 0 ? '+' : '') + v.toFixed(2) + '%';
+    const clsPct = v => v == null ? 'flat' : (v > 0.005 ? 'up' : v < -0.005 ? 'down' : 'flat');
+    const esc = s => String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
     for (const r of rows) {
         const tr = document.createElement('tr');
         tr.dataset.group = r.group;
         if (r.group === activeGroup) tr.classList.add('active');
         tr.innerHTML = `
-            <td>${r.group}</td>
-            <td>${r.sector}</td>
+            <td>${esc(r.group)}</td>
+            <td class="cluster" title="${esc(r.sector)}">${esc(r.sector)}</td>
             <td class="numeric">${r.count}</td>
-            <td class="tickers">${r.tickers.join(', ')}</td>
+            <td class="numeric change ${clsPct(r.change1d)}">${fmtPct(r.change1d)}</td>
+            <td class="numeric change ${clsPct(r.change1w)}">${fmtPct(r.change1w)}</td>
+            <td class="tickers">${esc(r.tickers.join(', '))}</td>
         `;
         tr.onclick = () => setActiveGroup(r.group);
         tb.appendChild(tr);
