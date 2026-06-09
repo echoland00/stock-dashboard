@@ -118,6 +118,7 @@
                     <th data-sort="sector" id="th-sector">Cluster <span class="sort-ind"></span></th>
                     <th data-sort="change1d" id="th-change1d" class="numeric">1D % <span class="sort-ind"></span></th>
                     <th data-sort="change1w" id="th-change1w" class="numeric">1W % <span class="sort-ind"></span></th>
+                    <th data-sort="change1m" id="th-change1m" class="numeric">1M % <span class="sort-ind"></span></th>
                     <th data-sort="tickers" id="th-tickers">Tickers <span class="sort-ind"></span></th>
                 </tr>
             </thead>
@@ -175,12 +176,12 @@ function buildGroupRows() {
     const sectors = allData.sectors || {};
     const tickerLookup = allData.ticker_lookup || {};
     return Object.keys(stocks).map(grp => {
-        const { change1d, change1w } = computeChanges(grp);
+        const { change1d, change1w, change1m } = computeChanges(grp);
         return {
             group: grp,
             sector: sectors[grp] || '',
             count: (stocks[grp] || []).length,
-            change1d, change1w,
+            change1d, change1w, change1m,
             tickers: stocks[grp] || [],
             tickerLookup
         };
@@ -191,7 +192,7 @@ function buildGroupRows() {
 // (1D = last 1 trading day, 1W = last 5 trading days) — independent of period selector
 function computeChanges(grp) {
     const rets = (allData.groups || {})[grp];
-    if (!rets || rets.length < 2) return { change1d: null, change1w: null };
+    if (!rets || rets.length < 2) return { change1d: null, change1w: null, change1m: null };
     // Build cumulative series from daily returns (base 100)
     const cum = [];
     let v = 100;
@@ -199,9 +200,11 @@ function computeChanges(grp) {
     const last = cum[cum.length - 1];
     const d1  = cum.length >= 2 ? cum[cum.length - 2] : last;
     const d5  = cum.length >= 6 ? cum[cum.length - 6] : cum[0];
+    const d21 = cum.length >= 22 ? cum[cum.length - 22] : cum[0];  // ~1 month
     return {
         change1d: (last - d1) / d1 * 100,
-        change1w: (last - d5) / d5 * 100
+        change1w: (last - d5) / d5 * 100,
+        change1m: (last - d21) / d21 * 100
     };
 }
 
@@ -231,6 +234,7 @@ function applySort(rows) {
             case 'sector':   av = a.sector.toLowerCase(); bv = b.sector.toLowerCase(); break;
             case 'change1d': av = a.change1d ?? -Infinity; bv = b.change1d ?? -Infinity; break;
             case 'change1w': av = a.change1w ?? -Infinity; bv = b.change1w ?? -Infinity; break;
+            case 'change1m': av = a.change1m ?? -Infinity; bv = b.change1m ?? -Infinity; break;
             case 'tickers':  av = a.tickers.join(',');    bv = b.tickers.join(',');    break;
             default: return 0;
         }
@@ -249,7 +253,7 @@ function renderStockTable() {
     meta.textContent = `Showing ${rows.length} / ${Object.keys(allData.stocks || {}).length} groups`;
 
     // Sort indicators
-    ['group','sector','change1d','change1w','tickers'].forEach(k => {
+    ['group','sector','change1d','change1w','change1m','tickers'].forEach(k => {
         const th = document.getElementById('th-' + k);
         if (!th) return;
         const ind = th.querySelector('.sort-ind');
@@ -259,7 +263,7 @@ function renderStockTable() {
     if (!rows.length) {
         const tr = document.createElement('tr');
         tr.className = 'empty-row';
-        tr.innerHTML = '<td colspan="5">No groups match the current filters.</td>';
+        tr.innerHTML = '<td colspan="6">No groups match the current filters.</td>';
         tb.appendChild(tr);
         return;
     }
@@ -277,6 +281,7 @@ function renderStockTable() {
             <td class="cluster" title="${esc(r.sector)}">${esc(r.sector)}</td>
             <td class="numeric change ${clsPct(r.change1d)}">${fmtPct(r.change1d)}</td>
             <td class="numeric change ${clsPct(r.change1w)}">${fmtPct(r.change1w)}</td>
+            <td class="numeric change ${clsPct(r.change1m)}">${fmtPct(r.change1m)}</td>
             <td class="tickers">${esc(r.tickers.join(', '))}</td>
         `;
         tr.onclick = () => setActiveGroup(r.group);
