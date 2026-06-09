@@ -14,13 +14,18 @@
         .controls { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; margin: 8px 0 12px; }
         .period-btn { padding: 4px 14px; border-radius: 14px; border: 1px solid #444; background: #1a1a3e; color: #aaa; font-size: 12px; cursor: pointer; }
         .period-btn.active { background: #6c5ce7; color: #fff; border-color: #6c5ce7; }
-        select { background: #1a1a3e; color: #ddd; border: 1px solid #444; padding: 4px 10px; border-radius: 6px; font-size: 12px; }
+        select, input[type="text"] { background: #1a1a3e; color: #ddd; border: 1px solid #444; padding: 4px 10px; border-radius: 6px; font-size: 12px; }
+        input[type="text"]::placeholder { color: #666; }
         .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(420px, 1fr)); gap: 12px; padding: 0 4px; }
-        .plot-card { background: #151530; border-radius: 10px; border: 1px solid #2a2a4e; overflow: hidden; }
+        .plot-card { background: #151530; border-radius: 10px; border: 1px solid #2a2a4e; overflow: hidden; transition: border-color 0.15s, box-shadow 0.15s; }
+        .plot-card.dimmed { opacity: 0.25; }
+        .plot-card.highlighted { border-color: #FFD700; box-shadow: 0 0 0 2px #FFD700, 0 0 24px rgba(255,215,0,0.25); }
         .plot-card .title { padding: 8px 12px 2px; font-size: 13px; font-weight: 600; color: #fff; display: flex; justify-content: space-between; }
         .plot-card .title .range { font-weight: 400; font-size: 11px; color: #777; }
         .plot-card .color-legend { display: flex; flex-wrap: wrap; gap: 4px 12px; padding: 2px 12px 6px; font-size: 10px; color: #aaa; }
-        .color-legend .item { display: flex; align-items: center; gap: 4px; }
+        .color-legend .item { display: flex; align-items: center; gap: 4px; cursor: pointer; padding: 2px 4px; border-radius: 4px; transition: background 0.1s; }
+        .color-legend .item:hover { background: #2a2a4e; }
+        .color-legend .item.muted { opacity: 0.25; }
         .color-legend .dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
         .plot-card .plot { width: 100%; height: 260px; }
         .summary { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 12px 0; }
@@ -30,16 +35,33 @@
         .up { color: #00d4aa; }
         .down { color: #ff6b6b; }
         .section { margin: 20px 0; background: #151530; border-radius: 10px; border: 1px solid #2a2a4e; padding: 16px; }
-        .section-label { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 12px; }
+        .section-label { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 8px; }
+        .table-controls { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+        .table-controls label { font-size: 11px; color: #888; }
+        .table-controls select, .table-controls input { font-size: 12px; }
+        .table-meta { font-size: 11px; color: #888; font-weight: 400; }
         .group-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-        .group-table th { background: #1a1a3e; color: #888; padding: 8px 10px; text-align: left; border-bottom: 1px solid #333; font-weight: 600; position: sticky; top: 0; }
+        .group-table th { background: #1a1a3e; color: #888; padding: 8px 10px; text-align: left; border-bottom: 1px solid #333; font-weight: 600; position: sticky; top: 0; user-select: none; cursor: pointer; white-space: nowrap; }
+        .group-table th:hover { color: #fff; }
+        .group-table th .sort-ind { color: #6c5ce7; margin-left: 4px; font-size: 10px; }
+        .group-table th.numeric { text-align: right; }
         .group-table td { padding: 6px 10px; border-bottom: 1px solid #2a2a3e; color: #ccc; }
+        .group-table td.numeric { text-align: right; color: #aaa; font-variant-numeric: tabular-nums; }
+        .group-table tr { transition: background 0.1s; cursor: pointer; }
         .group-table tr:hover td { background: #1a1a3e; }
+        .group-table tr.active td { background: #2a2a5e; color: #FFD700; }
+        .group-table tr.active td.tickers { color: #FFD700; }
         .group-table .tickers { color: #00d4aa; font-family: monospace; font-size: 11px; }
+        .group-table tr.hidden { display: none; }
+        .empty-row td { text-align: center; color: #888; padding: 24px; }
+        .reset-btn { background: transparent; border: 1px solid #444; color: #aaa; padding: 4px 10px; border-radius: 6px; font-size: 11px; cursor: pointer; }
+        .reset-btn:hover { border-color: #6c5ce7; color: #fff; }
         @media (max-width: 600px) {
             .grid { grid-template-columns: 1fr; }
             .plot-card .plot { height: 200px; }
             .header h1 { font-size: 16px; }
+            .table-controls { width: 100%; }
+            .table-controls select, .table-controls input { flex: 1; min-width: 0; }
         }
     </style>
 </head>
@@ -65,10 +87,29 @@
 <div class="grid" id="chartGrid"></div>
 
 <div class="section" id="stockSection">
-    <div class="section-label">📋 Stock Composition by Industrial Group</div>
-    <div style="overflow-x:auto;">
+    <div class="section-label">
+        <span>📋 Stock Composition by Industrial Group</span>
+        <span class="table-meta" id="tableMeta"></span>
+    </div>
+    <div class="table-controls">
+        <label for="sectorFilter">Sector:</label>
+        <select id="sectorFilter">
+            <option value="">All Sectors</option>
+        </select>
+        <label for="tickerSearch">Ticker:</label>
+        <input type="text" id="tickerSearch" placeholder="e.g. NVDA" />
+        <button class="reset-btn" id="resetBtn">Reset</button>
+    </div>
+    <div style="overflow-x:auto; margin-top: 12px;">
         <table class="group-table">
-            <thead><tr><th>Industrial Group</th><th>Cluster (Sector)</th><th>Tickers</th></tr></thead>
+            <thead>
+                <tr>
+                    <th data-sort="group" id="th-group">Industrial Group <span class="sort-ind"></span></th>
+                    <th data-sort="sector" id="th-sector">Cluster (Sector) <span class="sort-ind"></span></th>
+                    <th data-sort="count" id="th-count" class="numeric"># <span class="sort-ind"></span></th>
+                    <th data-sort="tickers" id="th-tickers">Tickers <span class="sort-ind"></span></th>
+                </tr>
+            </thead>
             <tbody id="stockTableBody"></tbody>
         </table>
     </div>
@@ -81,6 +122,13 @@ const SECTOR_ORDER = ['Information Technology','Communication Services','Consume
 let allData = null;
 let currentDays = 60;
 let currentView = 'cumulative';
+
+// Interactive state
+let sortKey = 'group';
+let sortAsc = true;
+let sectorFilter = '';
+let tickerFilter = '';
+let activeGroup = null;  // Currently highlighted group (clicked row)
 
 async function loadData() {
     try {
@@ -109,17 +157,146 @@ function getLastVal(groups, name) {
     return v ? v[v.length-1] : null;
 }
 
-function renderStockTable(data) {
+// ====== Interactive table ======
+
+function buildGroupRows() {
+    const stocks = allData.stocks || {};
+    const sectors = allData.sectors || {};
+    return Object.keys(stocks).map(grp => ({
+        group: grp,
+        sector: sectors[grp] || '',
+        count: (stocks[grp] || []).length,
+        tickers: stocks[grp] || []
+    }));
+}
+
+function applyFilters(rows) {
+    const tf = tickerFilter.trim().toUpperCase();
+    return rows.filter(r => {
+        if (sectorFilter && r.sector !== sectorFilter) return false;
+        if (tf && !r.tickers.some(t => t.toUpperCase().includes(tf))) return false;
+        return true;
+    });
+}
+
+function applySort(rows) {
+    const dir = sortAsc ? 1 : -1;
+    const sorted = [...rows];
+    sorted.sort((a, b) => {
+        let av, bv;
+        switch (sortKey) {
+            case 'group':   av = a.group.toLowerCase();  bv = b.group.toLowerCase();  break;
+            case 'sector':  av = a.sector.toLowerCase(); bv = b.sector.toLowerCase(); break;
+            case 'count':   av = a.count;                bv = b.count;                break;
+            case 'tickers': av = a.tickers.join(',');    bv = b.tickers.join(',');    break;
+            default: return 0;
+        }
+        if (av < bv) return -1 * dir;
+        if (av > bv) return  1 * dir;
+        return 0;
+    });
+    return sorted;
+}
+
+function renderStockTable() {
     const tb = document.getElementById('stockTableBody');
     tb.innerHTML = '';
-    const groups = Object.keys(data.stocks || {}).sort();
-    for (const grp of groups) {
-        const sec = data.sectors[grp] || '';
-        const tix = (data.stocks[grp] || []).join(', ');
-        const row = document.createElement('tr');
-        row.innerHTML = `<td>${grp}</td><td>${sec}</td><td class="tickers">${tix}</td>`;
-        tb.appendChild(row);
+    const rows = applySort(applyFilters(buildGroupRows()));
+    const meta = document.getElementById('tableMeta');
+    meta.textContent = `Showing ${rows.length} / ${Object.keys(allData.stocks || {}).length} groups`;
+
+    // Sort indicators
+    ['group','sector','count','tickers'].forEach(k => {
+        const th = document.getElementById('th-' + k);
+        const ind = th.querySelector('.sort-ind');
+        ind.textContent = (sortKey === k) ? (sortAsc ? '▲' : '▼') : '';
+    });
+
+    if (!rows.length) {
+        const tr = document.createElement('tr');
+        tr.className = 'empty-row';
+        tr.innerHTML = '<td colspan="4">No groups match the current filters.</td>';
+        tb.appendChild(tr);
+        return;
     }
+
+    for (const r of rows) {
+        const tr = document.createElement('tr');
+        tr.dataset.group = r.group;
+        if (r.group === activeGroup) tr.classList.add('active');
+        tr.innerHTML = `
+            <td>${r.group}</td>
+            <td>${r.sector}</td>
+            <td class="numeric">${r.count}</td>
+            <td class="tickers">${r.tickers.join(', ')}</td>
+        `;
+        tr.onclick = () => setActiveGroup(r.group);
+        tb.appendChild(tr);
+    }
+}
+
+function populateSectorFilter() {
+    const sel = document.getElementById('sectorFilter');
+    // Keep first "All Sectors" option
+    sel.innerHTML = '<option value="">All Sectors</option>';
+    const sectorsInData = Array.from(new Set(Object.values(allData.sectors || {})));
+    const ordered = SECTOR_ORDER.filter(s => sectorsInData.includes(s));
+    for (const s of ordered) {
+        const opt = document.createElement('option');
+        opt.value = s;
+        opt.textContent = s;
+        sel.appendChild(opt);
+    }
+    sel.value = sectorFilter;
+}
+
+function setActiveGroup(groupName) {
+    if (activeGroup === groupName) {
+        // Click same row again → clear highlight
+        activeGroup = null;
+    } else {
+        activeGroup = groupName;
+    }
+    updateChartHighlights();
+    renderStockTable();
+}
+
+function updateChartHighlights() {
+    // Highlight the card whose sector contains activeGroup; dim other cards.
+    // Also dim the inactive group traces within the highlighted card.
+    const sectors = allData.sectors || {};
+    const activeSector = activeGroup ? sectors[activeGroup] : null;
+    document.querySelectorAll('.plot-card').forEach(card => {
+        const cardSector = card.dataset.sector;
+        if (!activeGroup) {
+            card.classList.remove('highlighted', 'dimmed');
+        } else if (cardSector === activeSector) {
+            card.classList.add('highlighted');
+            card.classList.remove('dimmed');
+        } else {
+            card.classList.add('dimmed');
+            card.classList.remove('highlighted');
+        }
+    });
+    // Dim legend items not matching activeGroup
+    document.querySelectorAll('.color-legend .item').forEach(item => {
+        const g = item.dataset.group;
+        if (!activeGroup) item.classList.remove('muted');
+        else if (g === activeGroup) item.classList.remove('muted');
+        else item.classList.add('muted');
+    });
+}
+
+function resetAll() {
+    sortKey = 'group';
+    sortAsc = true;
+    sectorFilter = '';
+    tickerFilter = '';
+    activeGroup = null;
+    document.getElementById('sectorFilter').value = '';
+    document.getElementById('tickerSearch').value = '';
+    updateChartHighlights();
+    renderStockTable();
 }
 
 function render() {
@@ -127,7 +304,7 @@ function render() {
     const { dates, groups: grpRets } = allData;
     const { dates: slicedDates, groups: slicedGroups } = groupDailyReturns(dates, grpRets, currentDays, currentView);
     const sectors = allData.sectors || {};
-    
+
     // Summary
     let best = { n: '', v: -Infinity }, worst = { n: '', v: Infinity };
     for (const [n, v] of Object.entries(slicedGroups)) {
@@ -143,44 +320,44 @@ function render() {
         <div class="summary-item"><div class="label">📊 Avg Group</div><div class="val" style="color:#fff">${avg.toFixed(1)}</div><div class="label">${Object.keys(slicedGroups).length} groups</div></div>
     `;
     document.getElementById('updateDate').textContent = `Updated: ${slicedDates[slicedDates.length-1]} | ${slicedDates.length} trading days`;
-    
-    // Stock table
-    renderStockTable(allData);
-    
+
     // Subplots by sector
     const grid = document.getElementById('chartGrid');
     grid.innerHTML = '';
-    
+
     for (const sector of SECTOR_ORDER) {
         const groupsInSector = Object.entries(sectors).filter(([,s]) => s === sector).map(([g]) => g);
         const validGroups = groupsInSector.filter(g => slicedGroups[g]);
         if (!validGroups.length) continue;
-        
+
         const card = document.createElement('div');
         card.className = 'plot-card';
+        card.dataset.sector = sector;
         const titleDiv = document.createElement('div');
         titleDiv.className = 'title';
         const lastVals = validGroups.map(g => `${g} ${getLastVal(slicedGroups, g).toFixed(1)}`).join(' | ');
         titleDiv.innerHTML = `<span>${sector}</span><span class="range">${lastVals}</span>`;
         card.appendChild(titleDiv);
-        
-        // Color legend strip
+
+        // Color legend strip (also clickable → highlight group)
         const legendDiv = document.createElement('div');
         legendDiv.className = 'color-legend';
         validGroups.forEach((g, i) => {
             const item = document.createElement('span');
             item.className = 'item';
+            item.dataset.group = g;
             item.innerHTML = '<span class="dot" style="background:' + COLORS[i % COLORS.length] + '"></span>' + g;
+            item.onclick = (e) => { e.stopPropagation(); setActiveGroup(g); };
             legendDiv.appendChild(item);
         });
         card.appendChild(legendDiv);
-        
+
         const plotDiv = document.createElement('div');
         plotDiv.className = 'plot';
         plotDiv.id = `p-${sector.replace(/[^a-z]/gi,'')}`;
         card.appendChild(plotDiv);
         grid.appendChild(card);
-        
+
         const traces = validGroups.map((g, i) => ({
             x: slicedDates, y: slicedGroups[g], type: 'scatter', mode: 'lines', name: g,
             line: { color: COLORS[i % COLORS.length], width: 2.5 },
@@ -196,13 +373,20 @@ function render() {
         };
         Plotly.newPlot(plotDiv.id, traces, layout, { responsive: true, displayModeBar: false });
     }
+
+    // Re-apply highlight state (cards were just re-rendered)
+    updateChartHighlights();
+
+    // Stock table
+    renderStockTable();
 }
 
 loadData().then(data => {
-    if (data) { allData = data; render(); }
+    if (data) { allData = data; populateSectorFilter(); render(); }
     else document.getElementById('chartGrid').innerHTML = '<div style="text-align:center;padding:40px;color:#888;">⚠️ Failed to load data</div>';
 });
 
+// Controls
 document.querySelectorAll('.period-btn').forEach(btn => {
     btn.onclick = () => {
         document.querySelectorAll('.period-btn').forEach(b => b.classList.remove('active'));
@@ -212,6 +396,21 @@ document.querySelectorAll('.period-btn').forEach(btn => {
     };
 });
 document.getElementById('viewMode').onchange = e => { currentView = e.target.value; render(); };
+
+// Sortable headers
+document.querySelectorAll('.group-table th[data-sort]').forEach(th => {
+    th.onclick = () => {
+        const k = th.dataset.sort;
+        if (sortKey === k) sortAsc = !sortAsc;
+        else { sortKey = k; sortAsc = true; }
+        renderStockTable();
+    };
+});
+
+// Table filter controls
+document.getElementById('sectorFilter').onchange = e => { sectorFilter = e.target.value; renderStockTable(); };
+document.getElementById('tickerSearch').oninput = e => { tickerFilter = e.target.value; renderStockTable(); };
+document.getElementById('resetBtn').onclick = resetAll;
 </script>
 </body>
 </html>
