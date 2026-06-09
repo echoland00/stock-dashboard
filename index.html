@@ -57,6 +57,10 @@
         .group-table .change.up { color: #00d4aa; }
         .group-table .change.down { color: #ff6b6b; }
         .group-table .change.flat { color: #777; }
+.group-table .indicator { font-size: 14px; font-weight: bold; }
+.group-table .indicator.positive { color: #00d4aa; }
+.group-table .indicator.negative { color: #ff6b6b; }
+.group-table .indicator.neutral { color: #777; }
         .group-table tr.hidden { display: none; }
         .empty-row td { text-align: center; color: #888; padding: 24px; }
         .reset-btn { background: transparent; border: 1px solid #444; color: #aaa; padding: 4px 10px; border-radius: 6px; font-size: 11px; cursor: pointer; }
@@ -114,6 +118,7 @@
                     <th data-sort="count" id="th-count" class="numeric"># <span class="sort-ind"></span></th>
                     <th data-sort="change1d" id="th-change1d" class="numeric">1D % <span class="sort-ind"></span></th>
                     <th data-sort="change1w" id="th-change1w" class="numeric">1W % <span class="sort-ind"></span></th>
+                    <th class="numeric" title="Performance indicator">●</th>
                     <th data-sort="tickers" id="th-tickers">Tickers <span class="sort-ind"></span></th>
                 </tr>
             </thead>
@@ -169,6 +174,7 @@ function getLastVal(groups, name) {
 function buildGroupRows() {
     const stocks = allData.stocks || {};
     const sectors = allData.sectors || {};
+    const tickerLookup = allData.ticker_lookup || {};
     return Object.keys(stocks).map(grp => {
         const { change1d, change1w } = computeChanges(grp);
         return {
@@ -176,7 +182,8 @@ function buildGroupRows() {
             sector: sectors[grp] || '',
             count: (stocks[grp] || []).length,
             change1d, change1w,
-            tickers: stocks[grp] || []
+            tickers: stocks[grp] || [],
+            tickerLookup
         };
     });
 }
@@ -201,9 +208,16 @@ function computeChanges(grp) {
 
 function applyFilters(rows) {
     const tf = tickerFilter.trim().toUpperCase();
+    const tickerLookup = allData.ticker_lookup || {};
     return rows.filter(r => {
         if (sectorFilter && r.sector !== sectorFilter) return false;
-        if (tf && !r.tickers.some(t => t.toUpperCase().includes(tf))) return false;
+        if (tf) {
+            // First check if ticker is in any group's tickers list
+            const inGroup = r.tickers.some(t => t.toUpperCase().includes(tf));
+            // Fallback: check ticker_lookup for direct match
+            const directGroup = tickerLookup[tf];
+            if (!inGroup && !directGroup) return false;
+        }
         return true;
     });
 }
@@ -239,6 +253,7 @@ function renderStockTable() {
     // Sort indicators
     ['group','sector','count','change1d','change1w','tickers'].forEach(k => {
         const th = document.getElementById('th-' + k);
+        if (!th) return;
         const ind = th.querySelector('.sort-ind');
         ind.textContent = (sortKey === k) ? (sortAsc ? '▲' : '▼') : '';
     });
@@ -246,7 +261,7 @@ function renderStockTable() {
     if (!rows.length) {
         const tr = document.createElement('tr');
         tr.className = 'empty-row';
-        tr.innerHTML = '<td colspan="6">No groups match the current filters.</td>';
+        tr.innerHTML = '<td colspan="7">No groups match the current filters.</td>';
         tb.appendChild(tr);
         return;
     }
@@ -265,6 +280,7 @@ function renderStockTable() {
             <td class="numeric">${r.count}</td>
             <td class="numeric change ${clsPct(r.change1d)}">${fmtPct(r.change1d)}</td>
             <td class="numeric change ${clsPct(r.change1w)}">${fmtPct(r.change1w)}</td>
+            <td class="numeric" title="${r.change1w >= 0 ? 'Positive' : 'Negative'}">${r.change1w >= 0.005 ? '<span class="indicator positive">✓</span>' : r.change1w <= -0.005 ? '<span class="indicator negative">○</span>' : '<span class="indicator neutral">–</span>'}</td>
             <td class="tickers">${esc(r.tickers.join(', '))}</td>
         `;
         tr.onclick = () => setActiveGroup(r.group);
