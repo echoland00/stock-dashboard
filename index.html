@@ -212,11 +212,11 @@ function applyFilters(rows) {
     return rows.filter(r => {
         if (sectorFilter && r.sector !== sectorFilter) return false;
         if (tf) {
-            // First check if ticker is in any group's tickers list
+            // First check if ticker is in this group's tickers list
             const inGroup = r.tickers.some(t => t.toUpperCase().includes(tf));
-            // Fallback: check ticker_lookup for direct match
+            // Fallback: check if ticker_lookup maps to THIS group
             const directGroup = tickerLookup[tf];
-            if (!inGroup && !directGroup) return false;
+            if (!inGroup && directGroup !== r.group) return false;
         }
         return true;
     });
