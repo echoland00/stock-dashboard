@@ -455,6 +455,18 @@ loadData().then(data => {
     else document.getElementById('chartGrid').innerHTML = '<div style="text-align:center;padding:40px;color:#888;">⚠️ Failed to load data</div>';
 });
 
+// Navigation footer (美股 Dashboard 加 link 去港股)
+document.addEventListener('DOMContentLoaded', () => {
+    const footer = document.createElement('div');
+    footer.style.cssText = 'text-align:center;padding:20px 0 8px;margin-top:20px;border-top:1px solid #2a2a4e;font-size:11px;color:#666;';
+    footer.innerHTML = `
+        <a href="https://echoland00.github.io/stock-dashboard/" style="color:#fff;text-decoration:none;margin:0 12px;">📊 美股 Dashboard (current)</a>
+        <span style="color:#444;">·</span>
+        <a href="https://echoland00.github.io/stock-dashboard-hk/" target="_blank" rel="noopener" style="color:#6c5ce7;text-decoration:none;margin:0 12px;">🇭🇰 港股 Dashboard</a>
+    `;
+    document.body.appendChild(footer);
+});
+
 // Controls
 document.querySelectorAll('.period-btn').forEach(btn => {
     btn.onclick = () => {
