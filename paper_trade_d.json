@@ -1,0 +1,147 @@
+{
+  "generated_at": "2026-08-13 08:47:13",
+  "n_entries": 1,
+  "kpis": {
+    "beta_4w": null,
+    "alpha_13w_ann_pct": null,
+    "d_minus_a_13w_ann_pct": null,
+    "max_dd_pct": 0.0,
+    "weeks_in_dd": 0,
+    "current_dd_pct": 0.0,
+    "status": "GREEN"
+  },
+  "current_week": "2026-08-10",
+  "current_positions": [
+    {
+      "ticker": "MSFT",
+      "weight": 10.0,
+      "fst": 100.0,
+      "sector": "Technology",
+      "sector_etf": "XLK",
+      "sector_mom_pct": 8.45,
+      "price": 492.42999267578125
+    },
+    {
+      "ticker": "SAP",
+      "weight": 10.0,
+      "fst": 89.9,
+      "sector": "Technology",
+      "sector_etf": "XLK",
+      "sector_mom_pct": 8.45,
+      "price": 204.14999389648438
+    },
+    {
+      "ticker": "ORCL",
+      "weight": 10.0,
+      "fst": 88.0,
+      "sector": "Technology",
+      "sector_etf": "XLK",
+      "sector_mom_pct": 8.45,
+      "price": 153.27999877929688
+    },
+    {
+      "ticker": "BKNG",
+      "weight": 10.0,
+      "fst": 85.5,
+      "sector": "Cons. Discretionary",
+      "sector_etf": "XLY",
+      "sector_mom_pct": 1.55,
+      "price": 212.25999450683594
+    },
+    {
+      "ticker": "SHOP",
+      "weight": 10.0,
+      "fst": 84.5,
+      "sector": "Cons. Discretionary",
+      "sector_etf": "XLY",
+      "sector_mom_pct": 1.55,
+      "price": 150.41000366210938
+    },
+    {
+      "ticker": "ANET",
+      "weight": 10.0,
+      "fst": 84.3,
+      "sector": "Technology",
+      "sector_etf": "XLK",
+      "sector_mom_pct": 8.45,
+      "price": 210.5
+    },
+    {
+      "ticker": "MRVL",
+      "weight": 10.0,
+      "fst": 84.2,
+      "sector": "Technology",
+      "sector_etf": "XLK",
+      "sector_mom_pct": 8.45,
+      "price": 217.0800018310547
+    },
+    {
+      "ticker": "CRM",
+      "weight": 10.0,
+      "fst": 84.0,
+      "sector": "Technology",
+      "sector_etf": "XLK",
+      "sector_mom_pct": 8.45,
+      "price": 193.32000732421875
+    },
+    {
+      "ticker": "PANW",
+      "weight": 10.0,
+      "fst": 82.9,
+      "sector": "Technology",
+      "sector_etf": "XLK",
+      "sector_mom_pct": 8.45,
+      "price": 387.010009765625
+    },
+    {
+      "ticker": "PLTR",
+      "weight": 10.0,
+      "fst": 82.6,
+      "sector": "Technology",
+      "sector_etf": "XLK",
+      "sector_mom_pct": 8.45,
+      "price": 171.0399932861328
+    }
+  ],
+  "sector_mix": {
+    "Technology": 8,
+    "Cons. Discretionary": 2
+  },
+  "equity_curve": [
+    1.0,
+    1.0039
+  ],
+  "spy_curve": [
+    1.0,
+    1.0025
+  ],
+  "weeks": [
+    "start",
+    "2026-08-10"
+  ],
+  "trade_log": [
+    {
+      "week": "2026-08-10",
+      "n_long": 10,
+      "n_eligible": 49,
+      "port_ret_w": 0.0039,
+      "spy_ret_w": 0.0025,
+      "alpha_w": 0.0014,
+      "portfolio_value": 1.004,
+      "entries": [
+        "ANET",
+        "BKNG",
+        "CRM",
+        "MRVL",
+        "MSFT",
+        "ORCL",
+        "PANW",
+        "PLTR",
+        "SAP",
+        "SHOP"
+      ],
+      "exits": [],
+      "spy_price": 772.49
+    }
+  ]
+}
