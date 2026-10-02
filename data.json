@@ -1,9 +1,6 @@
 {
-  "generated_at": "2026-09-30 22:21:27",
+  "generated_at": "2026-10-02 08:51:57",
   "dates": [
-    "2026-03-30",
-    "2026-03-31",
-    "2026-04-01",
     "2026-04-02",
     "2026-04-06",
     "2026-04-07",
@@ -128,14 +125,12 @@
     "2026-09-25",
     "2026-09-28",
     "2026-09-29",
-    "2026-09-30"
+    "2026-09-30",
+    "2026-10-01"
   ],
   "groups": {
     "Healthcare Equipment": [
       0,
-      2.38,
-      0.35,
-      -0.2,
       0.14,
       -0.18,
       2.73,
@@ -259,13 +254,11 @@
       0.22,
       0.59,
       -0.03,
-      -0.68
+      -0.91,
+      0
     ],
     "Metals & Mining": [
       0,
-      4.0,
-      2.12,
-      -0.95,
       -0.06,
       -0.16,
       5.33,
@@ -389,13 +382,11 @@
       0.25,
       -1.25,
       -0.83,
-      1.05
+      -0.53,
+      0
     ],
     "Hardware": [
       0,
-      4.98,
-      2.85,
-      1.78,
       -0.11,
       1.14,
       5.18,
@@ -519,13 +510,11 @@
       1.18,
       -1.25,
       0.3,
-      0.07
+      -0.32,
+      0
     ],
     "Biotech": [
       0,
-      3.85,
-      0.67,
-      -0.9,
       -0.83,
       0.43,
       2.85,
@@ -649,13 +638,11 @@
       -0.28,
       -0.42,
       0.94,
-      -0.65
+      -1.0,
+      0
     ],
     "Hotels & Restaurants": [
       0,
-      3.17,
-      0.61,
-      -0.29,
       1.68,
       -1.71,
       3.79,
@@ -779,13 +766,11 @@
       0.66,
       -0.23,
       1.4,
-      0.64
+      -0.56,
+      0
     ],
     "Insurance": [
       0,
-      0.99,
-      -0.33,
-      0.63,
       0.34,
       0.12,
       1.71,
@@ -909,13 +894,11 @@
       0.02,
       -0.25,
       0.09,
-      -0.31
+      -1.38,
+      0.63
     ],
     "Aerospace & Defense": [
       0,
-      4.82,
-      2.98,
-      4.34,
       0.61,
       -0.78,
       3.38,
@@ -1039,13 +1022,11 @@
       0.0,
       -2.16,
       -0.82,
-      1.2
+      -0.61,
+      0
     ],
     "IT Services": [
       0,
-      1.07,
-      -0.32,
-      2.62,
       -0.2,
       -0.81,
       -0.41,
@@ -1169,13 +1150,11 @@
       -0.23,
       -1.97,
       0.23,
-      0.92
+      0.51,
+      0
     ],
     "Software": [
       0,
-      3.18,
-      -0.15,
-      0.99,
       -0.09,
       -0.13,
       -1.01,
@@ -1299,13 +1278,11 @@
       -1.48,
       -0.8,
       -1.07,
-      1.29
+      1.17,
+      0
     ],
     "Semiconductors": [
       0,
-      6.6,
-      2.39,
-      0.46,
       1.35,
       0.6,
       6.27,
@@ -1429,13 +1406,11 @@
       2.09,
       -2.05,
       1.4,
-      -0.19
+      -0.16,
+      0
     ],
     "Food & Staples": [
       0,
-      1.34,
-      -0.19,
-      1.03,
       1.26,
       -1.7,
       1.13,
@@ -1559,13 +1534,11 @@
       0.45,
       0.49,
       -0.8,
-      0.1
+      -0.99,
+      0
     ],
     "Commercial Services": [
       0,
-      0.83,
-      -0.18,
-      0.81,
       -0.2,
       -0.55,
       1.08,
@@ -1689,13 +1662,11 @@
       0.17,
       -0.46,
       -0.74,
-      -0.18
+      -0.99,
+      0
     ],
     "Multi-Utilities": [
       0,
-      0.15,
-      0.49,
-      1.05,
       -0.5,
       0.16,
       0.84,
@@ -1819,13 +1790,11 @@
       0.32,
       -0.81,
       1.1,
-      0.19
+      -0.4,
+      0
     ],
     "Electric Utilities": [
       0,
-      0.33,
-      0.77,
-      0.42,
       -0.37,
       0.39,
       1.09,
@@ -1949,13 +1918,11 @@
       0.52,
       -0.6,
       1.46,
-      -0.23
+      -0.75,
+      0
     ],
     "Investment Banking": [
       0,
-      2.1,
-      -0.23,
-      0.45,
       0.64,
       -0.52,
       3.13,
@@ -2079,13 +2046,11 @@
       0.47,
       -1.19,
       -0.05,
-      -0.14
+      -0.91,
+      0
     ],
     "Chemicals": [
       0,
-      0.49,
-      -0.12,
-      0.12,
       -0.41,
       -0.08,
       1.2,
@@ -2209,13 +2174,11 @@
       -0.42,
       -0.47,
       -0.24,
-      0.29
+      -1.12,
+      0
     ],
     "Building Products": [
       0,
-      3.85,
-      1.08,
-      -1.28,
       0.49,
       -0.77,
       4.75,
@@ -2339,13 +2302,11 @@
       1.96,
       -0.55,
       -0.3,
-      -0.02
+      -1.12,
+      0
     ],
     "Machinery": [
       0,
-      3.91,
-      1.51,
-      -0.74,
       0.39,
       0.33,
       4.9,
@@ -2469,13 +2430,11 @@
       0.78,
       -0.42,
       -0.08,
-      -0.14
+      -1.22,
+      2.95
     ],
     "Asset Management": [
       0,
-      2.38,
-      0.04,
-      0.41,
       0.28,
       -0.06,
       2.39,
@@ -2599,13 +2558,11 @@
       0.08,
       -1.56,
       -0.32,
-      0.33
+      -0.52,
+      0
     ],
     "Telecom Towers": [
       0,
-      1.56,
-      -0.6,
-      8.47,
       2.54,
       -2.06,
       2.72,
@@ -2729,13 +2686,11 @@
       0.46,
       -1.11,
       -0.27,
-      -0.5
+      -1.14,
+      0
     ],
     "Retailing": [
       0,
-      2.73,
-      0.03,
-      -0.2,
       1.05,
       -1.17,
       3.15,
@@ -2859,13 +2814,11 @@
       0.26,
       -1.21,
       0.0,
-      0.55
+      -0.51,
+      0
     ],
     "Oil & Gas E&P": [
       0,
-      -1.49,
-      -3.61,
-      1.21,
       0.51,
       0.47,
       -4.09,
@@ -2989,13 +2942,11 @@
       -1.69,
       -0.59,
       -1.26,
-      -0.0
+      -0.32,
+      0.59
     ],
     "Automobiles": [
       0,
-      3.14,
-      -0.48,
-      -1.67,
       -0.04,
       -1.08,
       3.76,
@@ -3119,13 +3070,11 @@
       1.02,
       -2.22,
       -0.02,
-      -0.18
+      -1.56,
+      0
     ],
     "Office & Industrial REITs": [
       0,
-      2.24,
-      -0.95,
-      1.07,
       -0.12,
       0.14,
       2.8,
@@ -3249,13 +3198,11 @@
       -0.12,
       -1.23,
       -0.03,
-      -0.73
+      -1.15,
+      0
     ],
     "Residential REITs": [
       0,
-      0.55,
-      0.56,
-      2.03,
       0.1,
       -0.01,
       1.19,
@@ -3379,13 +3326,11 @@
       0.59,
       0.09,
       0.19,
-      -0.66
+      -0.81,
+      0
     ],
     "Consumer Finance": [
       0,
-      1.66,
-      -1.1,
-      0.5,
       1.11,
       -1.01,
       2.91,
@@ -3509,13 +3454,11 @@
       1.03,
       -1.38,
       -0.74,
-      -0.15
+      -1.43,
+      0
     ],
     "Pharmaceuticals": [
       0,
-      2.24,
-      1.02,
-      -0.44,
       -0.58,
       -1.18,
       2.23,
@@ -3639,13 +3582,11 @@
       1.05,
       0.56,
       -0.82,
-      -0.2
+      -1.52,
+      0
     ],
     "Banks": [
       0,
-      3.98,
-      1.66,
-      -0.0,
       0.81,
       0.25,
       3.9,
@@ -3769,13 +3710,11 @@
       1.62,
       -1.19,
       -0.8,
-      0.14
+      -0.73,
+      0
     ],
     "Beverages": [
       0,
-      0.17,
-      -0.0,
-      0.55,
       1.41,
       -1.16,
       1.02,
@@ -3899,13 +3838,11 @@
       0.53,
       -0.78,
       -0.91,
-      0.71
+      -0.64,
+      0
     ],
     "Oil & Gas Services": [
       0,
-      3.19,
-      -1.01,
-      1.41,
       0.88,
       0.18,
       3.45,
@@ -4029,13 +3966,11 @@
       -1.07,
       -2.49,
       -1.15,
-      0.72
+      -1.09,
+      0
     ],
     "Packaged Foods": [
       0,
-      -0.74,
-      -1.26,
-      0.85,
       0.93,
       -1.6,
       0.16,
@@ -4159,13 +4094,11 @@
       -1.19,
       0.28,
       -0.29,
-      -0.54
+      -2.49,
+      0
     ],
     "Healthcare Services": [
       0,
-      1.77,
-      0.55,
-      0.51,
       0.7,
       1.4,
       1.44,
@@ -4289,13 +4222,11 @@
       1.07,
       -0.33,
       -0.26,
-      -0.7
+      -0.81,
+      0
     ],
     "Healthcare REITs": [
       0,
-      0.35,
-      -0.38,
-      1.3,
       0.52,
       -0.07,
       0.48,
@@ -4419,13 +4350,11 @@
       -0.33,
       -1.35,
       0.02,
-      -0.3
+      -0.73,
+      0
     ],
     "Household": [
       0,
-      0.06,
-      -0.13,
-      -1.27,
       1.06,
       -1.93,
       3.19,
@@ -4549,13 +4478,11 @@
       0.83,
       0.1,
       -0.49,
-      0.33
+      -1.3,
+      0
     ],
     "Transportation": [
       0,
-      3.39,
-      1.01,
-      -0.29,
       0.28,
       -0.67,
       3.41,
@@ -4679,13 +4606,11 @@
       0.85,
       -0.12,
       0.35,
-      -0.35
+      -1.39,
+      0
     ],
     "Entertainment": [
       0,
-      0.92,
-      -0.08,
-      0.76,
       0.27,
       0.81,
       1.34,
@@ -4809,13 +4734,11 @@
       -0.85,
       0.18,
       -0.93,
-      1.0
+      0.61,
+      0
     ],
     "Consumer Durables": [
       0,
-      3.86,
-      -0.62,
-      -0.88,
       1.28,
       -1.9,
       4.56,
@@ -4939,13 +4862,11 @@
       0.4,
       0.2,
       -0.73,
-      0.48
+      -0.5,
+      0
     ],
     "Homebuilding": [
       0,
-      2.67,
-      -0.03,
-      0.59,
       1.7,
       -3.47,
       4.08,
@@ -5069,13 +4990,11 @@
       1.02,
       -0.67,
       0.03,
-      -0.4
+      -1.76,
+      0
     ],
     "Data Centers": [
       0,
-      2.28,
-      0.87,
-      0.56,
       0.87,
       -0.31,
       1.39,
@@ -5199,13 +5118,11 @@
       -1.95,
       -0.25,
       0.03,
-      -0.48
+      -0.47,
+      0
     ],
     "Telecom": [
       0,
-      0.75,
-      -0.92,
-      1.35,
       -0.82,
       -0.7,
       -1.67,
@@ -5329,13 +5246,11 @@
       -0.26,
       -0.78,
       -1.13,
-      0.46
+      -0.26,
+      0
     ],
     "Retail REITs": [
       0,
-      1.3,
-      0.52,
-      0.61,
       -0.06,
       0.39,
       0.95,
@@ -5459,13 +5374,11 @@
       0.53,
       -0.15,
       -0.44,
-      -0.57
+      -0.87,
+      0
     ],
     "Interactive Media": [
       0,
-      3.98,
-      0.84,
-      -0.35,
       0.91,
       -0.58,
       2.68,
@@ -5589,13 +5502,11 @@
       -0.11,
       -1.83,
       -0.29,
-      0.93
+      0.08,
+      0
     ],
     "Quantum Computing": [
       0,
-      9.25,
-      -3.89,
-      4.63,
       -0.38,
       -2.31,
       3.79,
@@ -5719,13 +5630,11 @@
       -0.13,
       -3.55,
       -1.55,
-      3.92
+      0.16,
+      0
     ],
     "Tobacco": [
       0,
-      -0.61,
-      -2.81,
-      0.46,
       1.31,
       -1.11,
       1.51,
@@ -5849,54 +5758,55 @@
       -0.31,
       1.09,
       -0.26,
-      -0.59
+      -1.8,
+      0
     ]
   },
   "sectors": {
-    "Oil & Gas E&P": "Energy",
-    "Consumer Durables": "Consumer Discretionary",
-    "Entertainment": "Communication Services",
-    "Software": "Information Technology",
-    "Metals & Mining": "Materials",
-    "Electric Utilities": "Utilities",
-    "Oil & Gas Services": "Energy",
-    "Hotels & Restaurants": "Consumer Discretionary",
-    "Multi-Utilities": "Utilities",
-    "Semiconductors": "Information Technology",
-    "Homebuilding": "Consumer Discretionary",
-    "Pharmaceuticals": "Health Care",
-    "Healthcare Equipment": "Health Care",
-    "Commercial Services": "Industrials",
-    "Interactive Media": "Communication Services",
-    "Building Products": "Industrials",
-    "Healthcare Services": "Health Care",
-    "Healthcare REITs": "Real Estate",
-    "Telecom Towers": "Real Estate",
-    "Tobacco": "Consumer Staples",
-    "Hardware": "Information Technology",
-    "Office & Industrial REITs": "Real Estate",
-    "Food & Staples": "Consumer Staples",
-    "Beverages": "Consumer Staples",
-    "Aerospace & Defense": "Industrials",
-    "Banks": "Financials",
-    "Transportation": "Industrials",
-    "Retail REITs": "Real Estate",
-    "Packaged Foods": "Consumer Staples",
-    "IT Services": "Information Technology",
-    "Investment Banking": "Financials",
-    "Asset Management": "Financials",
-    "Machinery": "Industrials",
-    "Household": "Consumer Staples",
-    "Insurance": "Financials",
-    "Quantum Computing": "Information Technology",
-    "Biotech": "Health Care",
-    "Retailing": "Consumer Discretionary",
     "Chemicals": "Materials",
-    "Automobiles": "Consumer Discretionary",
+    "Healthcare Services": "Health Care",
+    "Beverages": "Consumer Staples",
+    "Residential REITs": "Real Estate",
+    "Software": "Information Technology",
+    "Banks": "Financials",
+    "Consumer Durables": "Consumer Discretionary",
+    "Transportation": "Industrials",
+    "Healthcare REITs": "Real Estate",
+    "Entertainment": "Communication Services",
+    "Multi-Utilities": "Utilities",
+    "Aerospace & Defense": "Industrials",
     "Telecom": "Communication Services",
-    "Consumer Finance": "Financials",
     "Data Centers": "Real Estate",
-    "Residential REITs": "Real Estate"
+    "Insurance": "Financials",
+    "Hardware": "Information Technology",
+    "Electric Utilities": "Utilities",
+    "Telecom Towers": "Real Estate",
+    "Metals & Mining": "Materials",
+    "Retailing": "Consumer Discretionary",
+    "Retail REITs": "Real Estate",
+    "Healthcare Equipment": "Health Care",
+    "Building Products": "Industrials",
+    "Household": "Consumer Staples",
+    "Semiconductors": "Information Technology",
+    "Tobacco": "Consumer Staples",
+    "Investment Banking": "Financials",
+    "Oil & Gas Services": "Energy",
+    "Biotech": "Health Care",
+    "Automobiles": "Consumer Discretionary",
+    "Food & Staples": "Consumer Staples",
+    "Pharmaceuticals": "Health Care",
+    "Quantum Computing": "Information Technology",
+    "Machinery": "Industrials",
+    "IT Services": "Information Technology",
+    "Commercial Services": "Industrials",
+    "Packaged Foods": "Consumer Staples",
+    "Office & Industrial REITs": "Real Estate",
+    "Interactive Media": "Communication Services",
+    "Homebuilding": "Consumer Discretionary",
+    "Consumer Finance": "Financials",
+    "Oil & Gas E&P": "Energy",
+    "Hotels & Restaurants": "Consumer Discretionary",
+    "Asset Management": "Financials"
   },
   "stocks": {
     "Healthcare Equipment": [
@@ -6313,6 +6223,7 @@
       "AR",
       "CHRD",
       "COP",
+      "CTRA",
       "CVX",
       "DVN",
       "EOG",
@@ -6726,6 +6637,7 @@
     "CSGP": "Healthcare REITs",
     "CSX": "Transportation",
     "CTAS": "Commercial Services",
+    "CTRA": "Oil & Gas E&P",
     "CTSH": "IT Services",
     "CTVA": "Chemicals",
     "CVNA": "Automobiles",
